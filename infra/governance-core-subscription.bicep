@@ -19,6 +19,9 @@ param actionGroupShortName string = 'govcore'
 @description('Email address to receive governance alerts.')
 param alertEmailAddress string
 
+@description('Workbook display name.')
+param workbookDisplayName string = 'Cloud Policy Compliance Dashboard'
+
 resource governanceResourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: location
@@ -43,6 +46,20 @@ module actionGroup './modules/action-group.bicep' = {
   }
 }
 
+module workbook './modules/workbook.bicep' = {
+  name: 'deploy-workbook'
+  scope: resourceGroup(governanceResourceGroup.name)
+  params: {
+    location: location
+    workbookDisplayName: workbookDisplayName
+    logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
+
+    // THIS is the corrected path
+    workbookData: loadTextContent('../workbooks/policy-dashboard.json')
+  }
+}
+
 output resourceGroupId string = governanceResourceGroup.id
 output logAnalyticsWorkspaceId string = logAnalytics.outputs.workspaceId
 output actionGroupId string = actionGroup.outputs.actionGroupId
+output workbookId string = workbook.outputs.workbookId

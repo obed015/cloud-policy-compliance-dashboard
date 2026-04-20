@@ -1,0 +1,4 @@
+PolicyStates
+| where ComplianceState == "NonCompliant"
+| summarize nonCompliantResources = count() by PolicyDefinitionName
+| order by nonCompliantResources desc

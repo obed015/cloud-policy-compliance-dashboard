@@ -1,0 +1,11 @@
+AzureActivity
+| where CategoryValue =~ "Policy"
+| where OperationNameValue has "policy"
+| project
+    TimeGenerated,
+    Caller,
+    OperationNameValue,
+    ActivityStatusValue,
+    ResourceGroup,
+    SubscriptionId
+| order by TimeGenerated desc
