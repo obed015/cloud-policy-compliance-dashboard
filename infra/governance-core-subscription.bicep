@@ -53,9 +53,17 @@ module workbook './modules/workbook.bicep' = {
     location: location
     workbookDisplayName: workbookDisplayName
     logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
-
-    // THIS is the corrected path
     workbookData: loadTextContent('../workbooks/policy-dashboard.json')
+  }
+}
+
+module alertRules './modules/alert-rules.bicep' = {
+  name: 'deploy-alert-rules'
+  scope: resourceGroup(governanceResourceGroup.name)
+  params: {
+    location: location
+    logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
+    actionGroupId: actionGroup.outputs.actionGroupId
   }
 }
 
@@ -63,3 +71,5 @@ output resourceGroupId string = governanceResourceGroup.id
 output logAnalyticsWorkspaceId string = logAnalytics.outputs.workspaceId
 output actionGroupId string = actionGroup.outputs.actionGroupId
 output workbookId string = workbook.outputs.workbookId
+output nonComplianceAlertId string = alertRules.outputs.nonComplianceAlertId
+output policyActivityAlertId string = alertRules.outputs.policyActivityAlertId
