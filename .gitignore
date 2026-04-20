@@ -1,0 +1,11 @@
+# Bicep build outputs
+*.json
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+
+# Azure
+.azure/
