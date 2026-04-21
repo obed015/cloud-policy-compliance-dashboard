@@ -9,11 +9,18 @@ module policyPublicNetworkAccess './policy-public-network-access.bicep' = {
   params: {}
 }
 
+module policyRemediateStorage './policy-remediate-storage-network-default-deny.bicep' = {
+  name: 'policy-remediate-storage-disable-blob-public-access'
+  scope: managementGroup(mgId)
+  params: {}
+}
+
 module initiativeCloudGovernance './initiative-cloud-governance.bicep' = {
   name: 'initiative-cloud-governance'
   scope: managementGroup(mgId)
   params: {
-    publicNetworkPolicyDefinitionId: policyPublicNetworkAccess.outputs.policyDefinitionId
+    publicNetworkAuditPolicyDefinitionId: policyPublicNetworkAccess.outputs.policyDefinitionId
+    publicNetworkRemediationPolicyDefinitionId: policyRemediateStorage.outputs.policyDefinitionId
   }
 }
 
@@ -26,5 +33,7 @@ module assignmentCloudGovernance './assignment-cloud-governance.bicep' = {
 }
 
 output policyDefinitionId string = policyPublicNetworkAccess.outputs.policyDefinitionId
+output remediationPolicyDefinitionId string = policyRemediateStorage.outputs.policyDefinitionId
 output initiativeDefinitionId string = initiativeCloudGovernance.outputs.initiativeDefinitionId
 output assignmentId string = assignmentCloudGovernance.outputs.assignmentId
+output assignmentPrincipalId string = assignmentCloudGovernance.outputs.assignmentPrincipalId

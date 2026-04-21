@@ -7,10 +7,13 @@ param initiativeName string = 'cloud-governance-baseline'
 param initiativeDisplayName string = 'Cloud Governance Baseline'
 
 @description('Description for the initiative.')
-param initiativeDescription string = 'Groups governance policies for platform-wide Azure compliance.'
+param initiativeDescription string = 'Groups governance policies for platform-wide Azure compliance and remediation.'
 
-@description('Resource ID of the custom public network access policy definition.')
-param publicNetworkPolicyDefinitionId string
+@description('Resource ID of the audit policy definition.')
+param publicNetworkAuditPolicyDefinitionId string
+
+@description('Resource ID of the remediation policy definition.')
+param publicNetworkRemediationPolicyDefinitionId string
 
 resource policySetDefinition 'Microsoft.Authorization/policySetDefinitions@2025-03-01' = {
   name: initiativeName
@@ -20,13 +23,17 @@ resource policySetDefinition 'Microsoft.Authorization/policySetDefinitions@2025-
     description: initiativeDescription
     metadata: {
       category: 'Governance'
-      version: '1.0.0'
+      version: '2.0.0'
     }
     parameters: {}
     policyDefinitions: [
       {
-        policyDefinitionId: publicNetworkPolicyDefinitionId
+        policyDefinitionId: publicNetworkAuditPolicyDefinitionId
         policyDefinitionReferenceId: 'auditStoragePublicNetworkAccess'
+      }
+      {
+        policyDefinitionId: publicNetworkRemediationPolicyDefinitionId
+        policyDefinitionReferenceId: 'remediateStorageDefaultDeny'
       }
     ]
   }
